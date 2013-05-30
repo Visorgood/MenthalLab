@@ -2,6 +2,7 @@ package menthallab.wifimeasure;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import android.net.wifi.ScanResult;
@@ -63,8 +64,23 @@ public class WorkActivity extends Activity {
 		getMenuInflater().inflate(R.menu.work, menu);
 		return true;
 	}
+	
+	@Override
+    public void onResume() {
+        super.onResume();
+        if (isWorking)
+        {
+	        registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	        wifi.startScan();
+        }
+    }
 
-	int i = 0;
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isWorking)
+        	unregisterReceiver(rssiReceiver);
+    }
 	
     BroadcastReceiver rssiReceiver = new BroadcastReceiver() {
     	@Override
@@ -81,8 +97,11 @@ public class WorkActivity extends Activity {
 	    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001);
 	    			instance.add(bssid, signalLevel);
 	    		}
+	    		Date start = new Date();
 	    		String classificationLabel = knn.classify(instance);
-    			String network = String.format("(%d) Room: %s", i++, classificationLabel);
+	    		Date end = new Date();
+	    		long computingTime = (end.getTime() - start.getTime());
+    			String network = String.format("Room: %s. Computing time: %d ms", classificationLabel, computingTime);
     			resultRoomName.setText(network);
 	    		wifi.startScan();
     		}
