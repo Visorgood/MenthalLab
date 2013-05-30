@@ -108,6 +108,7 @@ public class MainActivity extends Activity {
     		unregisterReceiver(rssiReceiver);
     		isWorking = false;
     		startButton.setText("Start");
+    		editText.setEnabled(true);
     		try
     		{
     			File sdDir = android.os.Environment.getExternalStorageDirectory();
@@ -126,6 +127,7 @@ public class MainActivity extends Activity {
     	{
 	    	isWorking = true;
 	    	startButton.setText("Stop");
+	    	editText.setEnabled(false);
     		registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	    	wifi.startScan();
     	}
