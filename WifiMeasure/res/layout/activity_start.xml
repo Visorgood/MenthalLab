@@ -20,19 +20,20 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/welcome_text"
         android:layout_centerHorizontal="true"
-        android:width="100dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="55dp"
+        android:onClick="startTraining"
         android:text="Learn"
-        android:onClick="startTraining" />
+        android:width="100dp" />
 
     <Button
         android:id="@+id/bt_work"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/bt_learn"
-        android:layout_centerVertical="true"
-        android:width="100dp"
+        android:layout_below="@+id/bt_learn"
+        android:layout_marginTop="60dp"
+        android:onClick="startWorking"
         android:text="Work"
-        android:onClick="startWorking" />
+        android:width="100dp" />
 
 </RelativeLayout>
