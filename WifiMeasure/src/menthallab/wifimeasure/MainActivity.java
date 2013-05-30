@@ -135,13 +135,17 @@ public class MainActivity extends Activity {
     
     /** Called when the user clicks the Back button */
     public void returnBack(View view) {
-    	isWorking = false;
-        MainActivity.super.onBackPressed();
+    	btBackPressed();
     }
     
     /** Called when the user clicks the device Back button */
     @Override
     public void onBackPressed() {
+    	btBackPressed();
+    }
+    
+    private void btBackPressed()
+    {
     	isWorking = false;
         MainActivity.super.onBackPressed();
     }

@@ -29,7 +29,8 @@ public class StartActivity extends Activity {
     
     /** Called when the user clicks the Work button */
     public void startWorking(View view) {
-
+    	Intent intent = new Intent(this, WorkActivity.class);
+		startActivity(intent);
     }
 
 }
