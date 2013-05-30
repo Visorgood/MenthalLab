@@ -64,8 +64,6 @@ public class MainActivity extends Activity {
         	unregisterReceiver(rssiReceiver);
     }
     
-    Context context = this;
-    
     BroadcastReceiver rssiReceiver = new BroadcastReceiver() {
     	@Override
         public void onReceive(Context context, Intent intent)

@@ -35,7 +35,8 @@ public class kNN
 			for (String attributeName : datasetAttributes)
 			{
 				int value = instance.get(attributeName);
-				int queryValue = queryInstance.get(attributeName);
+				Integer queryValue = queryInstance.get(attributeName);
+				queryValue = (null != queryValue ? queryValue : 0);
 				sum += Math.pow(value - queryValue, 2);
 			}
 			double distance = Math.sqrt(sum);
@@ -56,7 +57,7 @@ public class kNN
 		{
 			double sum = 0;
 			for (InstanceInfo instanceInfo : kNearestInstances)
-				if (instanceInfo.label == label)
+				if (instanceInfo.label.equals(label))
 					sum += instanceInfo.weight;
 			if (sum > maxSum)
 			{
@@ -98,7 +99,7 @@ class SortedByDistanceList
 		boolean success = false;
 		
 		for (int i = 0; i < this.instanceInfos.size() && !success; ++i)
-			if (instanceInfo.distance > this.instanceInfos.get(i).distance)
+			if (instanceInfo.distance < this.instanceInfos.get(i).distance)
 			{
 				this.instanceInfos.add(i, instanceInfo);
 				success = true;
@@ -116,6 +117,8 @@ class SortedByDistanceList
 	
 	public InstanceInfo[] toArray()
 	{
-		return this.instanceInfos.toArray(null);
+		InstanceInfo[] instanceInfoArray = new InstanceInfo[this.instanceInfos.size()];
+		this.instanceInfos.toArray(instanceInfoArray);
+		return instanceInfoArray;
 	}
 }
