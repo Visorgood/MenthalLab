@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
 	private EditText editText;
 	
 	private WifiManager wifi;
-	private boolean isWorking = false;
+	private boolean isWorking;
 	
 	private Dataset dataset;
 	
@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
 		startButton = (Button)findViewById(R.id.bt_start);
 		editText = (EditText)findViewById(R.id.edit_name);
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		isWorking = false;
 		
 		dataset = new Dataset();
 	}
@@ -49,14 +50,18 @@ public class MainActivity extends Activity {
 	@Override
     public void onResume() {
         super.onResume();
-        registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifi.startScan();
+        if (isWorking)
+        {
+	        registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	        wifi.startScan();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        unregisterReceiver(rssiReceiver);
+        if (isWorking)
+        	unregisterReceiver(rssiReceiver);
     }
     
     Context context = this;
@@ -67,25 +72,22 @@ public class MainActivity extends Activity {
     	{
     		try
     		{
-    			if (isWorking)
-    			{
-		    		List<ScanResult> scanResults = wifi.getScanResults();
-		    		StringBuilder messageBuilder = new StringBuilder();
-					Instance instance = new Instance();
-		    		for (ScanResult scanResult : scanResults)
-		    		{
-		    			String ssid = scanResult.SSID;
-		    			int rssi = scanResult.level;
-		    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001);
-		    			String network = String.format("Name: %s; RSSI: %d dBm; Level: %d\n", ssid, rssi, signalLevel);
-		    			messageBuilder.append(network);
-		    			String networkName = scanResult.BSSID;
-		    			instance.add(networkName, signalLevel);
-		    		}
-		    		String label = editText.getText().toString();
-					dataset.addInstance(instance, label, true);
-		    		textView.setText(messageBuilder.toString());
-    			}
+    			List<ScanResult> scanResults = wifi.getScanResults();
+	    		StringBuilder messageBuilder = new StringBuilder();
+				Instance instance = new Instance();
+	    		for (ScanResult scanResult : scanResults)
+	    		{
+	    			String ssid = scanResult.SSID;
+	    			int rssi = scanResult.level;
+	    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001);
+	    			String network = String.format("Name: %s; RSSI: %d dBm; Level: %d\n", ssid, rssi, signalLevel);
+	    			messageBuilder.append(network);
+	    			String networkName = scanResult.BSSID;
+	    			instance.add(networkName, signalLevel);
+	    		}
+	    		String label = editText.getText().toString();
+				dataset.addInstance(instance, label, true);
+	    		textView.setText(messageBuilder.toString());
 	    		wifi.startScan();
     		}
     		catch (Exception exc)
@@ -103,6 +105,7 @@ public class MainActivity extends Activity {
     {
     	if (isWorking)
     	{
+    		unregisterReceiver(rssiReceiver);
     		isWorking = false;
     		startButton.setText("Start");
     		try
@@ -123,6 +126,8 @@ public class MainActivity extends Activity {
     	{
 	    	isWorking = true;
 	    	startButton.setText("Stop");
+    		registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	    	wifi.startScan();
     	}
     }
     
