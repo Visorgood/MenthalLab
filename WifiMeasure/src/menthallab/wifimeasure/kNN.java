@@ -17,55 +17,8 @@ public class kNN
 	
 	public String classify(Instance queryInstance)
 	{
-		// Local method
-		//InstanceInfo[] kNearestInstances = findKNearestInstances(queryInstance);
-		//String classificationLabel = computeLabel(kNearestInstances);
-		//return classificationLabel;
-		// End of local method
-		
-		// Global method
-		String classificationLabel = null;
-		
-		final List<String> datasetAttributes = this.dataset.getAttributes();
-		final List<String> differentLabels = this.dataset.getDifferentLabels();
-		final double[] weights = new double[differentLabels.size()];
-		for (int i = 0; i < this.dataset.size(); ++i)
-		{
-			Instance instance = this.dataset.getInstance(i);
-			int sum = 0;
-			for (String attributeName : datasetAttributes)
-			{
-				int value = instance.get(attributeName);
-				Integer queryValue = queryInstance.get(attributeName);
-				queryValue = (null != queryValue ? queryValue : 0);
-				sum += Math.pow(value - queryValue, 2);
-			}
-			String label = this.dataset.getLabel(i);
-			if (0 == sum)
-			{
-				classificationLabel = label;
-				break;
-			}
-			double weight = 1.0 / sum;
-			weights[differentLabels.indexOf(label)] += weight;
-		}
-		
-		if (null == classificationLabel)
-		{
-			double maxWeight = 0.0;
-			for (int i = 0; i < weights.length; ++i)
-			{
-				double weight = weights[i];
-				if (weight > maxWeight)
-				{
-					maxWeight = weight;
-					classificationLabel = differentLabels.get(i);
-				}
-			}
-		}
-		
-		return classificationLabel;
-		// End of global method
+		InstanceInfo[] kNearestInstances = findKNearestInstances(queryInstance);
+		return computeLabel(kNearestInstances);
 	}
 	
 	// Compute distances from query instance to all instances in data set,
@@ -111,6 +64,51 @@ public class kNN
 				classificationLabel = label;
 			}
 		}
+		return classificationLabel;
+	}
+	
+	private String globalClassification(Instance queryInstance)
+	{
+		String classificationLabel = null;
+		
+		final List<String> datasetAttributes = this.dataset.getAttributes();
+		final List<String> differentLabels = this.dataset.getDifferentLabels();
+		final double[] weights = new double[differentLabels.size()];
+		for (int i = 0; i < this.dataset.size(); ++i)
+		{
+			Instance instance = this.dataset.getInstance(i);
+			int sum = 0;
+			for (String attributeName : datasetAttributes)
+			{
+				int value = instance.get(attributeName);
+				Integer queryValue = queryInstance.get(attributeName);
+				queryValue = (null != queryValue ? queryValue : 0);
+				sum += Math.pow(value - queryValue, 2);
+			}
+			String label = this.dataset.getLabel(i);
+			if (0 == sum)
+			{
+				classificationLabel = label;
+				break;
+			}
+			double weight = 1.0 / sum;
+			weights[differentLabels.indexOf(label)] += weight;
+		}
+		
+		if (null == classificationLabel)
+		{
+			double maxWeight = 0.0;
+			for (int i = 0; i < weights.length; ++i)
+			{
+				double weight = weights[i];
+				if (weight > maxWeight)
+				{
+					maxWeight = weight;
+					classificationLabel = differentLabels.get(i);
+				}
+			}
+		}
+		
 		return classificationLabel;
 	}
 }
