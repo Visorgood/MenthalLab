@@ -95,7 +95,7 @@ public class WorkActivity extends Activity {
 	    			String bssid = scanResult.BSSID;
 	    			int rssi = scanResult.level;
 	    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001);
-	    			instance.add(bssid, signalLevel);
+	    			instance.add(bssid, signalLevel / 1000.0);
 	    		}
 	    		Date start = new Date();
 	    		String classificationLabel = knn.classify(instance);

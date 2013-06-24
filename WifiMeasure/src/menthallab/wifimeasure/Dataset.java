@@ -5,14 +5,14 @@ import java.util.*;
 public class Dataset
 {
 	private final List<String> attributes;
-	private final List<List<Integer>> instances;
+	private final List<RawInstance> instances;
 	private final List<String> labels;
 	private final List<String> differentLabels;
 	
 	public Dataset()
 	{
 		this.attributes = new ArrayList<String>();
-		this.instances = new ArrayList<List<Integer>>();
+		this.instances = new ArrayList<RawInstance>();
 		this.labels = new ArrayList<String>();
 		this.differentLabels = new ArrayList<String>();
 	}
@@ -22,8 +22,8 @@ public class Dataset
 		if (this.attributes.contains(attributeName))
 			return false;
 		this.attributes.add(attributeName);
-		for (List<Integer> instance : this.instances)
-			instance.add(0);
+		for (RawInstance rawInstance : this.instances)
+			rawInstance.add(0);
 		return true;
 	}
 	
@@ -35,44 +35,56 @@ public class Dataset
 			for (String attributeName : instance.getAttributes())
 				this.addAttribute(attributeName);
 		boolean mustBeAdded = false;
-		List<Integer> values = new ArrayList<Integer>();
+		RawInstance newRawInstance = new RawInstance();
 		for (String attributeName : this.attributes)
 		{
-			Integer value = instance.get(attributeName);
+			Double value = instance.get(attributeName);
 			if (null != value)
 			{
-				values.add(value);
+				newRawInstance.add(value);
 				mustBeAdded = true;
 			}
 			else
-				values.add(0);
+				newRawInstance.add(0);
 				
 		}
 		if (mustBeAdded)
 		{
-			this.instances.add(values);
+			this.instances.add(newRawInstance);
 			this.labels.add(label);
 			if (!this.differentLabels.contains(label))
 				this.differentLabels.add(label);
 		}
 	}
 	
+	public void addRawInstance(RawInstance rawInstance, String label)
+	{
+		if (rawInstance.size() == 0)
+			return;
+		if (rawInstance.size() != this.attributes.size())
+			throw new IllegalArgumentException("Dataset.addRawInstance");
+		this.instances.add(rawInstance);
+		this.labels.add(label);
+		if (!this.differentLabels.contains(label))
+			this.differentLabels.add(label);
+	}
+	
 	public Instance getInstance(int index)
 	{
 		if (index < 0 || index >= this.instances.size())
 			return null;
-		List<Integer> values = this.instances.get(index);
+		RawInstance rawInstance = this.instances.get(index);
 		Instance instance = new Instance();
 		for (int i = 0; i < this.attributes.size(); ++i)
-			instance.add(this.attributes.get(i), values.get(i));
+			instance.add(this.attributes.get(i), rawInstance.get(i));
 		return instance;
 	}
 	
-	public List<Integer> getRawInstance(int index)
+	public RawInstance getRawInstance(int index)
 	{
 		if (index < 0 || index >= this.instances.size())
 			return null;
-		return Collections.unmodifiableList(this.instances.get(index));
+		return this.instances.get(index);
 	}
 	
 	public String getLabel(int index)

@@ -8,6 +8,8 @@ import android.view.View;
 
 public class StartActivity extends Activity {
 
+	public NeuralNetwork neuralNetwork;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,4 +35,6 @@ public class StartActivity extends Activity {
 		startActivity(intent);
     }
 
+    // TODO: make a button to learn the network
+    
 }

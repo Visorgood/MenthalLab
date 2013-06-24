@@ -1,7 +1,6 @@
 package menthallab.wifimeasure;
 
 import java.io.*;
-import java.util.*;
 
 public class DatasetManager
 {
@@ -14,21 +13,19 @@ public class DatasetManager
 		String attributesLine = reader.readLine();
 		String[] attributeNames = attributesLine.split(",");
 		for (String attributeName : attributeNames)
-			dataset.addAttribute(attributeName);
+			if (!attributeName.equals("class"))
+				dataset.addAttribute(attributeName);
 		
 		// Read instances
 		String instanceLine = null;
 		while (null != (instanceLine = reader.readLine()))
 		{
 			String[] values = instanceLine.split(",");
-			Instance instance = new Instance();
-			for (int i = 0; i < attributeNames.length; ++i)
-			{
-				int value = Integer.parseInt(values[i]);
-				instance.add(attributeNames[i], value);
-			}
-			String label = values[values.length - 1];
-			dataset.addInstance(instance, label, false);
+			String label = values[0];
+			RawInstance rawInstance = new RawInstance();
+			for (int i = 1; i < values.length; ++i)
+				rawInstance.add(Double.parseDouble(values[i]));
+			dataset.addRawInstance(rawInstance, label);
 		}
 		
 		reader.close();
@@ -43,6 +40,7 @@ public class DatasetManager
 	    StringBuilder sb = new StringBuilder();
 	    
 	    // Write line with attribute names
+	    sb.append("class,");
 	    for (String attributeName : dataset.getAttributes())
 	    	sb.append(attributeName + ",");
 	    sb.delete(sb.length() - 1, sb.length());
@@ -52,17 +50,37 @@ public class DatasetManager
 	    for (int i = 0; i < dataset.size(); ++i)
 	    {
 	    	sb.delete(0, sb.length());
-	    	List<Integer> values = dataset.getRawInstance(i);
-	    	for (int value : values)
+	    	String label = dataset.getLabel(i);
+	    	sb.append(label + ",");
+	    	RawInstance rawInstance = dataset.getRawInstance(i);
+	    	for (double value : rawInstance.getValues())
 	    	{
 	    		sb.append(value);
 	    		sb.append(",");
 	    	}
-	    	String label = dataset.getLabel(i);
-	    	sb.append(label);
+	    	sb.delete(sb.length() - 1, sb.length());
 	    	printStream.println(sb.toString());
 	    }
 	    
 	    printStream.close();
+	}
+	
+	public static org.neuroph.core.learning.DataSet convertToNeuroph(Dataset dataset)
+	{
+		final int inputs = dataset.getAttributes().size();
+		final int outputs = dataset.getDifferentLabels().size();
+		org.neuroph.core.learning.DataSet neurophDataSet = new org.neuroph.core.learning.DataSet(inputs, outputs);
+		for (int i = 0; i < dataset.size(); ++i)
+		{
+			final RawInstance rawInstance = dataset.getRawInstance(i);
+			double[] input = new double[inputs];
+			for (int j = 0; j < rawInstance.size(); ++j)
+				input[j] = rawInstance.get(j);
+			final String label = dataset.getLabel(i);
+			double[] output = new double[outputs];
+			output[dataset.getDifferentLabels().indexOf(label)] = 1;
+			neurophDataSet.addRow(input, output);
+		}
+		return neurophDataSet;
 	}
 }

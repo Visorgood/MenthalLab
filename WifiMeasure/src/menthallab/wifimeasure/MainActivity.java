@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 	    			String network = String.format("Name: %s; RSSI: %d dBm; Level: %d\n", ssid, rssi, signalLevel);
 	    			messageBuilder.append(network);
 	    			String networkName = scanResult.BSSID;
-	    			instance.add(networkName, signalLevel);
+	    			instance.add(networkName, signalLevel / 1000.0);
 	    		}
 	    		String label = editText.getText().toString();
 				dataset.addInstance(instance, label, true);
@@ -104,9 +104,9 @@ public class MainActivity extends Activity {
     	if (isWorking)
     	{
     		unregisterReceiver(rssiReceiver);
-    		isWorking = false;
-    		startButton.setText("Start");
     		editText.setEnabled(true);
+    		startButton.setText("Start");
+    		isWorking = false;
     		try
     		{
     			File sdDir = android.os.Environment.getExternalStorageDirectory();
@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
     
     private void btBackPressed()
     {
-    	isWorking = false;
+    	isWorking = false;//!!!!!! must be done other way!!!!!
         MainActivity.super.onBackPressed();
     }
 }

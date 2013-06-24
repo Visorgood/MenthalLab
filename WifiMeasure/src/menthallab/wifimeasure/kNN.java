@@ -4,7 +4,7 @@ import java.util.*;
 
 public class kNN
 {
-	private final static int DEFAULT_K = 5;
+	private final static int DEFAULT_K = 9;
 	
 	private final Dataset dataset;
 	private final int k;
@@ -33,9 +33,9 @@ public class kNN
 			int sum = 0;
 			for (String attributeName : datasetAttributes)
 			{
-				int value = instance.get(attributeName);
-				Integer queryValue = queryInstance.get(attributeName);
-				queryValue = (null != queryValue ? queryValue : 0);
+				double value = instance.get(attributeName);
+				Double queryValue = queryInstance.get(attributeName);
+				queryValue = (null != queryValue ? queryValue : 0.0);
 				sum += Math.pow(value - queryValue, 2);
 			}
 			double distance = Math.sqrt(sum);
@@ -80,8 +80,8 @@ public class kNN
 			int sum = 0;
 			for (String attributeName : datasetAttributes)
 			{
-				int value = instance.get(attributeName);
-				Integer queryValue = queryInstance.get(attributeName);
+				double value = instance.get(attributeName);
+				Double queryValue = queryInstance.get(attributeName);
 				queryValue = (null != queryValue ? queryValue : 0);
 				sum += Math.pow(value - queryValue, 2);
 			}
