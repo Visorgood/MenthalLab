@@ -81,7 +81,9 @@ public class TrainActivity extends Activity {
 	    		{
 	    			String ssid = scanResult.SSID;
 	    			int rssi = scanResult.level;
-	    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001);
+	    			//TODO: doesn't work for android 2.3 with numLevels > 45
+	    			// see: http://stackoverflow.com/questions/11086362/error-receiving-broadcast-intent-act-android-net-wifi-scan-results
+	    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001); 
 	    			String network = String.format("Name: %s; RSSI: %d dBm; Level: %d\n", ssid, rssi, signalLevel);
 	    			messageBuilder.append(network);
 	    			String networkName = scanResult.BSSID;
