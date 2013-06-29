@@ -15,10 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class TrainActivity extends Activity {
 	
 	private TextView textView;
 	private Button startButton;
+	private Button backButton;
 	private EditText editText;
 	
 	private WifiManager wifi;
@@ -29,11 +30,12 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_train);
 		
-		textView = (TextView)findViewById(R.id.text_view);
+		textView = (TextView)findViewById(R.id.text_wifiResults);
 		startButton = (Button)findViewById(R.id.bt_start);
-		editText = (EditText)findViewById(R.id.edit_name);
+		backButton = (Button)findViewById(R.id.bt_back);
+		editText = (EditText)findViewById(R.id.edit_roomName);
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		isWorking = false;
 		
@@ -84,6 +86,8 @@ public class MainActivity extends Activity {
 	    			instance.add(networkName, signalLevel / 1000.0);
 	    		}
 	    		String label = editText.getText().toString();
+	    		if (label.equals(""))
+	    			label = editText.getHint().toString();
 				dataset.addInstance(instance, label, true);
 	    		textView.setText(messageBuilder.toString());
 	    		wifi.startScan();
@@ -105,6 +109,7 @@ public class MainActivity extends Activity {
     	{
     		unregisterReceiver(rssiReceiver);
     		editText.setEnabled(true);
+    		backButton.setEnabled(true);
     		startButton.setText("Start");
     		isWorking = false;
     		try
@@ -126,6 +131,7 @@ public class MainActivity extends Activity {
 	    	isWorking = true;
 	    	startButton.setText("Stop");
 	    	editText.setEnabled(false);
+	    	backButton.setEnabled(false);
     		registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	    	wifi.startScan();
     	}
@@ -145,6 +151,6 @@ public class MainActivity extends Activity {
     private void btBackPressed()
     {
     	isWorking = false;//!!!!!! must be done other way!!!!!
-        MainActivity.super.onBackPressed();
+        TrainActivity.super.onBackPressed();
     }
 }

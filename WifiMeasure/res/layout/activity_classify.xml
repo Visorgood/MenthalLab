@@ -6,34 +6,26 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".StartActivity" >
-
+    tools:context=".ClassifyActivity" >
+    
     <TextView
-        android:id="@+id/welcome_text"
+        android:id="@+id/text_classificationReuslt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_text" />
-
-    <Button
-        android:id="@+id/bt_train"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/welcome_text"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp"
-        android:onClick="startTraining"
-        android:text="Train"
-        android:width="100dp" />
+        android:layout_marginTop="38dp"
+        android:width="250dp" />
 
     <Button
-        android:id="@+id/bt_classify"
+        android:id="@+id/bt_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/bt_train"
-        android:layout_below="@+id/bt_train"
-        android:layout_marginTop="60dp"
-        android:onClick="startClassifying"
-        android:text="Classify"
+        android:layout_below="@+id/text_classificationReuslt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:onClick="returnBack"
+        android:text="Back"
         android:width="100dp" />
 
 </RelativeLayout>

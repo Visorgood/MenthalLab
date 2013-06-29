@@ -20,27 +20,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class WorkActivity extends Activity {
+public class ClassifyActivity extends Activity {
 	
-	private TextView textView;
 	private Button startButton;
 	private TextView resultRoomName;
 	
 	private WifiManager wifi;	
-	private boolean isWorking;
 	
 	private	kNN knn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_work);
+		setContentView(R.layout.activity_classify);
 		
-		textView = (TextView)findViewById(R.id.text_view);
-		startButton = (Button)findViewById(R.id.bt_start);
-		resultRoomName = (TextView)findViewById(R.id.text_name);
+		resultRoomName = (TextView)findViewById(R.id.text_classificationReuslt);
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		isWorking = false;
 		
 		File sdDir = android.os.Environment.getExternalStorageDirectory();
 		File file = new File(sdDir, "/dataset.csv");
@@ -68,17 +63,12 @@ public class WorkActivity extends Activity {
 	@Override
     public void onResume() {
         super.onResume();
-        if (isWorking)
-        {
 	        registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-	        wifi.startScan();
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (isWorking)
         	unregisterReceiver(rssiReceiver);
     }
 	
@@ -120,23 +110,6 @@ public class WorkActivity extends Activity {
     	btBackPressed();
     }
     
-    /** Called when the user clicks the Start button */
-    public void startTraining(View view)
-    {
-    	if (isWorking)
-    	{
-    		unregisterReceiver(rssiReceiver);
-    		isWorking = false;
-    		startButton.setText("Start");
-    	}
-    	else
-    	{
-	    	isWorking = true;
-	    	startButton.setText("Stop");
-    		registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-	    	wifi.startScan();
-    	}
-    }
     
     /** Called when the user clicks the device Back button */
     @Override
@@ -146,7 +119,7 @@ public class WorkActivity extends Activity {
     
     private void btBackPressed()
     {
-        WorkActivity.super.onBackPressed();
+        ClassifyActivity.super.onBackPressed();
     }
 
 }

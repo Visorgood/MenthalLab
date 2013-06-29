@@ -6,10 +6,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".WorkActivity" >
-    
+    tools:context=".TrainActivity" >
+
     <TextView
-        android:id="@+id/text_view"
+        android:id="@+id/text_wifiResults"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -17,22 +17,26 @@
         android:layout_marginTop="182dp"
         android:gravity="left" />
 
-    <TextView
-        android:id="@+id/text_name"
+    <EditText
+        android:id="@+id/edit_roomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="38dp"
-        android:width="250dp" />
+        android:ems="10"
+        android:hint="Room1" >
+
+        <requestFocus />
+    </EditText>
 
     <Button
         android:id="@+id/bt_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/bt_back"
-        android:layout_alignBottom="@+id/bt_back"
-        android:layout_alignLeft="@+id/text_name"
+        android:layout_alignLeft="@+id/edit_roomName"
+        android:layout_below="@+id/edit_roomName"
+        android:layout_marginTop="23dp"
         android:onClick="startTraining"
         android:text="Start"
         android:width="100dp" />
@@ -41,11 +45,12 @@
         android:id="@+id/bt_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/text_name"
-        android:layout_below="@+id/text_name"
-        android:layout_marginTop="23dp"
+        android:layout_alignBaseline="@+id/bt_start"
+        android:layout_alignBottom="@+id/bt_start"
+        android:layout_alignRight="@+id/edit_roomName"
         android:onClick="returnBack"
         android:text="Back"
-        android:width="100dp" />
+        android:width="100dp"
+        android:enabled="true" />
 
 </RelativeLayout>

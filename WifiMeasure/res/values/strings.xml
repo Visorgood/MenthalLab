@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_start">StartActivity</string>
-    <string name="welcome_text">Welcome to our Application! To start learning process push &quot;Learn&quot; button, to define your location , push &quot;Work&quot; button. Have fun!</string>
+    <string name="welcome_text">Welcome to our Application! To start training process push &quot;Train&quot; button, to define your location , push &quot;Classify&quot; button. Have fun!</string>
     <string name="title_activity_work">WorkActivity</string>
 
 </resources>
