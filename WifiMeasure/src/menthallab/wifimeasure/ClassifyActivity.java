@@ -41,6 +41,7 @@ public class ClassifyActivity extends Activity {
 			Dataset dataset = DatasetManager.loadFromFile(filePath);
 			neuralNetwork = new NeuralNetwork();
 			neuralNetwork.learn(dataset);
+			wifi.startScan();
 		}
 		catch (IOException exc)
 		{
@@ -61,6 +62,7 @@ public class ClassifyActivity extends Activity {
     public void onResume() {
         super.onResume();
 	        registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	        wifi.startScan();
     }
 
     @Override

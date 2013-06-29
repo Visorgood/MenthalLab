@@ -1,5 +1,7 @@
 package menthallab.wifimeasure;
 
+import java.util.*;
+
 import org.neuroph.core.learning.*;
 import org.neuroph.nnet.*;
 import org.neuroph.util.*;
@@ -7,6 +9,8 @@ import org.neuroph.util.*;
 public class NeuralNetwork
 {
 	private MultiLayerPerceptron mlPerceptron;
+	private List<String> attributes;
+	private List<String> labels;
 	
 	public NeuralNetwork()
 	{
@@ -15,33 +19,39 @@ public class NeuralNetwork
 	
 	public void learn(Dataset dataset)
 	{
-		DataSet trainSet = convertToNeuroph(dataset);
+		TrainingSet<SupervisedTrainingElement> trainSet = convertToNeuroph(dataset);
 		final int inputUnits = trainSet.getInputSize();
 		final int outputUnits = trainSet.getOutputSize();
 		final int hiddenUnits = (inputUnits + outputUnits) / 2;
-		mlPerceptron = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, inputUnits, hiddenUnits, outputUnits);
-		mlPerceptron.learn(trainSet);
-		mlPerceptron.getInputNeurons()[0].getLabel();
+		this.mlPerceptron = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, inputUnits, hiddenUnits, outputUnits);
+		this.mlPerceptron.learn(trainSet);
 	}
 	
 	public String classify(Instance instance)
 	{
-		double[] input = new double[instance.size()];
-		for (int i = 0; i < instance.size(); ++i)
-			input[i] = instance.get("");
-		double[] output = new double[mlPerceptron.getOutputsCount()];
-		DataSetRow dataSetRow = new DataSetRow(input, output);
-		mlPerceptron.setInput(dataSetRow.getInput());
-		mlPerceptron.calculate();
-		output = mlPerceptron.getOutput();
-		return "";
+		double[] input = new double[this.attributes.size()];
+		for (int i = 0; i < this.attributes.size(); ++i)
+		{
+			String attributeName = this.attributes.get(i);
+			Double value = instance.get(attributeName);
+			input[i] = (null != value ? value : 0);
+		}
+		double[] output = new double[this.labels.size()];
+		SupervisedTrainingElement testInstance = new SupervisedTrainingElement(input, output);
+		this.mlPerceptron.setInput(testInstance.getInput());
+		this.mlPerceptron.calculate();
+		return getLabel(this.mlPerceptron.getOutput());
 	}
 
-	private DataSet convertToNeuroph(Dataset dataset)
+	private TrainingSet<SupervisedTrainingElement> convertToNeuroph(Dataset dataset)
 	{
-		final int inputs = dataset.getAttributes().size();
-		final int outputs = dataset.getDifferentLabels().size();
-		DataSet dataSet = new DataSet(inputs, outputs);
+		this.attributes = new ArrayList<String>(dataset.getAttributes());
+		this.labels = new ArrayList<String>(dataset.getDifferentLabels());
+		
+		final int inputs = this.attributes.size();
+		final int outputs = this.labels.size();		
+		TrainingSet<SupervisedTrainingElement> trainSet = new TrainingSet<SupervisedTrainingElement>(inputs, outputs);
+		
 		for (int i = 0; i < dataset.size(); ++i)
 		{
 			final RawInstance rawInstance = dataset.getRawInstance(i);
@@ -50,9 +60,22 @@ public class NeuralNetwork
 				input[j] = rawInstance.get(j);
 			final String label = dataset.getLabel(i);
 			double[] output = new double[outputs];
-			output[dataset.getDifferentLabels().indexOf(label)] = 1;
-			dataSet.addRow(input, output);
+			output[this.labels.indexOf(label)] = 1;
+			trainSet.addElement(new SupervisedTrainingElement(input, output));
 		}
-		return dataSet;
+		return trainSet;
+	}
+	
+	private String getLabel(double[] output)
+	{
+		double maxOutput = 0.0;
+		int index = 0;
+		for (int i = 0; i < output.length; ++i)
+			if (output[i] > maxOutput)
+			{
+				maxOutput = output[i];
+				index = i;
+			}
+		return this.labels.get(index);
 	}
 }
