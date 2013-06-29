@@ -14,7 +14,7 @@ public class NeuralNetwork
 	}
 	
 	public void learn(DataSet trainSet)
-	{		
+	{
 		final int inputUnits = trainSet.getInputSize();
 		final int outputUnits = trainSet.getOutputSize();
 		final int hiddenUnits = (inputUnits + outputUnits) / 2;

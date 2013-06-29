@@ -49,12 +49,7 @@ public class Dataset
 				
 		}
 		if (mustBeAdded)
-		{
-			this.instances.add(newRawInstance);
-			this.labels.add(label);
-			if (!this.differentLabels.contains(label))
-				this.differentLabels.add(label);
-		}
+			addNewRawInstance(newRawInstance, label);
 	}
 	
 	public void addRawInstance(RawInstance rawInstance, String label)
@@ -63,6 +58,11 @@ public class Dataset
 			return;
 		if (rawInstance.size() != this.attributes.size())
 			throw new IllegalArgumentException("Dataset.addRawInstance");
+		addNewRawInstance(rawInstance, label);
+	}
+	
+	private void addNewRawInstance(RawInstance rawInstance, String label)
+	{
 		this.instances.add(rawInstance);
 		this.labels.add(label);
 		if (!this.differentLabels.contains(label))

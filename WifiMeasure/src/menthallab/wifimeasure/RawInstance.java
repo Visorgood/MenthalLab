@@ -16,11 +16,9 @@ public class RawInstance
 		this.values.add(value);
 	}
 	
-	public double get(int index)
+	public Double get(int index)
 	{
-		if (index < 0 || index >= this.values.size())
-			throw new IndexOutOfBoundsException("RawInstance.get");
-		return this.values.get(index);
+		return (index >= 0 && index < this.values.size() ? this.values.get(index) : null);
 	}
 	
 	public List<Double> getValues()
