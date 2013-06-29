@@ -40,6 +40,8 @@ public class TrainActivity extends Activity {
 		isWorking = false;
 		
 		dataset = new Dataset();
+		
+		editText.setHint("Room " + IDGenerator.getNextId());
 	}
 
 	@Override
@@ -112,6 +114,7 @@ public class TrainActivity extends Activity {
     		backButton.setEnabled(true);
     		startButton.setText("Start");
     		isWorking = false;
+    		editText.setHint("Room " + IDGenerator.getNextId());
     		try
     		{
     			File sdDir = android.os.Environment.getExternalStorageDirectory();

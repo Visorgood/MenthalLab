@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="38dp"
         android:ems="10"
-        android:hint="Room1" >
+        android:hint="Room Name" >
 
         <requestFocus />
     </EditText>
