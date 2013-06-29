@@ -21,12 +21,9 @@ import android.widget.TextView;
 
 public class ClassifyActivity extends Activity {
 	
-	private Button startButton;
 	private TextView resultRoomName;
-	
-	private WifiManager wifi;	
-	
-	private	kNN knn;
+	private WifiManager wifi;
+	private	NeuralNetwork neuralNetwork;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +39,8 @@ public class ClassifyActivity extends Activity {
 		try
 		{
 			Dataset dataset = DatasetManager.loadFromFile(filePath);
-			knn = new kNN(dataset, 10);
+			neuralNetwork = new NeuralNetwork();
+			neuralNetwork.learn(dataset);
 		}
 		catch (IOException exc)
 		{
@@ -87,7 +85,7 @@ public class ClassifyActivity extends Activity {
 	    			instance.add(bssid, signalLevel / 1000.0);
 	    		}
 	    		Date start = new Date();
-	    		String classificationLabel = knn.classify(instance);
+	    		String classificationLabel = neuralNetwork.classify(instance);
 	    		Date end = new Date();
 	    		long computingTime = (end.getTime() - start.getTime());
     			String network = String.format("Room: %s. Computing time: %d ms", classificationLabel, computingTime);

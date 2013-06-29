@@ -64,23 +64,4 @@ public class DatasetManager
 	    
 	    printStream.close();
 	}
-	
-	public static org.neuroph.core.learning.DataSet convertToNeuroph(Dataset dataset)
-	{
-		final int inputs = dataset.getAttributes().size();
-		final int outputs = dataset.getDifferentLabels().size();
-		org.neuroph.core.learning.DataSet neurophDataSet = new org.neuroph.core.learning.DataSet(inputs, outputs);
-		for (int i = 0; i < dataset.size(); ++i)
-		{
-			final RawInstance rawInstance = dataset.getRawInstance(i);
-			double[] input = new double[inputs];
-			for (int j = 0; j < rawInstance.size(); ++j)
-				input[j] = rawInstance.get(j);
-			final String label = dataset.getLabel(i);
-			double[] output = new double[outputs];
-			output[dataset.getDifferentLabels().indexOf(label)] = 1;
-			neurophDataSet.addRow(input, output);
-		}
-		return neurophDataSet;
-	}
 }
