@@ -21,14 +21,14 @@ public class StartActivity extends Activity {
 		return true;
 	}
 	
-	/** Called when the user clicks the Learn button */
+	/** Called when the user clicks the Train button */
     public void startTraining(View view) {
 		Intent intent = new Intent(this, TrainActivity.class);
 		startActivity(intent);
     }
     
-    /** Called when the user clicks the Work button */
-    public void startWorking(View view) {
+    /** Called when the user clicks the Classify button */
+    public void startClassifying(View view) {
     	Intent intent = new Intent(this, ClassifyActivity.class);
 		startActivity(intent);
     }
