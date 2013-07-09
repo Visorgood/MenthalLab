@@ -13,4 +13,9 @@ public class IDGenerator
 	{
 		return id++;
 	}
+	
+	public static void reset()
+	{
+		id = 1;
+	}
 }

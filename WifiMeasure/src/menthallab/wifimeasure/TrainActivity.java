@@ -38,6 +38,7 @@ public class TrainActivity extends Activity {
 		editText = (EditText)findViewById(R.id.edit_roomName);
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		isWorking = false;
+		IDGenerator.reset();
 		
 		dataset = new Dataset();
 		
@@ -81,13 +82,11 @@ public class TrainActivity extends Activity {
 	    		{
 	    			String ssid = scanResult.SSID;
 	    			int rssi = scanResult.level;
-	    			//TODO: doesn't work for android 2.3 with numLevels > 45
-	    			// see: http://stackoverflow.com/questions/11086362/error-receiving-broadcast-intent-act-android-net-wifi-scan-results
-	    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001); 
+	    			int signalLevel = calculateSignalLevel(rssi, 101); 
 	    			String network = String.format("Name: %s; RSSI: %d dBm; Level: %d\n", ssid, rssi, signalLevel);
 	    			messageBuilder.append(network);
 	    			String networkName = scanResult.BSSID;
-	    			instance.add(networkName, signalLevel / 1000.0);
+	    			instance.add(networkName, signalLevel / 100.0);
 	    		}
 	    		String label = editText.getText().toString();
 	    		if (label.equals(""))
@@ -114,6 +113,7 @@ public class TrainActivity extends Activity {
     		unregisterReceiver(rssiReceiver);
     		editText.setEnabled(true);
     		backButton.setEnabled(true);
+    		textView.setText("");
     		startButton.setText("Start");
     		isWorking = false;
     		editText.setHint("Room " + IDGenerator.getNextId());
@@ -157,5 +157,24 @@ public class TrainActivity extends Activity {
     {
     	isWorking = false;//!!!!!! must be done other way!!!!!
         TrainActivity.super.onBackPressed();
+    }
+    
+    // overrides WifiManager.calculateSignalLevel
+    public int calculateSignalLevel(int rssi, int numLevels)
+    {
+    	int MIN_RSSI        = -100;
+        int MAX_RSSI        = -55; 
+        
+        if(rssi <= MIN_RSSI) {
+            return 0;
+        } else if(rssi >= MAX_RSSI) {
+            return numLevels - 1;
+        } else {
+            float inputRange = (MAX_RSSI - MIN_RSSI);
+            float outputRange = (numLevels - 1);
+            if(inputRange != 0)
+                return (int) ((float) (rssi - MIN_RSSI) * outputRange / inputRange);
+        }
+        return 0;
     }
 }

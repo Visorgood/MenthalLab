@@ -83,14 +83,12 @@ public class ClassifyActivity extends Activity {
 	    		{
 	    			String bssid = scanResult.BSSID;
 	    			int rssi = scanResult.level;
-	    			int signalLevel = WifiManager.calculateSignalLevel(rssi, 1001);
-	    			instance.add(bssid, signalLevel / 1000.0);
+	    			int signalLevel = calculateSignalLevel(rssi, 101);
+	    			instance.add(bssid, signalLevel / 100.0);
 	    		}
-	    		Date start = new Date();
 	    		String classificationLabel = neuralNetwork.classify(instance);
 	    		Date end = new Date();
-	    		long computingTime = (end.getTime() - start.getTime());
-    			String network = String.format("Room: %s. Computing time: %d ms", classificationLabel, computingTime);
+    			String network = String.format("Room: %s. Computing time: %d ms", classificationLabel, new Date());
     			resultRoomName.setText(network);
 	    		wifi.startScan();
     		}
@@ -119,6 +117,25 @@ public class ClassifyActivity extends Activity {
     private void btBackPressed()
     {
         ClassifyActivity.super.onBackPressed();
+    }
+    
+    // overrides WifiManager.calculateSignalLevel
+    public int calculateSignalLevel(int rssi, int numLevels)
+    {
+    	int MIN_RSSI        = -100;
+        int MAX_RSSI        = -55; 
+        
+        if(rssi <= MIN_RSSI) {
+            return 0;
+        } else if(rssi >= MAX_RSSI) {
+            return numLevels - 1;
+        } else {
+            float inputRange = (MAX_RSSI - MIN_RSSI);
+            float outputRange = (numLevels - 1);
+            if(inputRange != 0)
+                return (int) ((float) (rssi - MIN_RSSI) * outputRange / inputRange);
+        }
+        return 0;
     }
 
 }
