@@ -19,6 +19,24 @@ public class NeuralNetwork
 	
 	public void learn(Dataset dataset)
 	{
+		TrainingSet<SupervisedTrainingElement> trainSet = initLearning(dataset);
+		this.mlPerceptron.learn(trainSet);
+	}
+	
+	public void asyncLearn(Dataset dataset)
+	{
+		TrainingSet<SupervisedTrainingElement> trainSet = initLearning(dataset);
+		this.mlPerceptron.learnInNewThread(trainSet);
+	}
+	
+	public boolean isCompleted()
+	{
+		// check whether is really learning!
+		return this.mlPerceptron.getLearningRule().isStopped();
+	}
+	
+	private TrainingSet<SupervisedTrainingElement> initLearning(Dataset dataset)
+	{
 		final double maxError = 0.01;
 		final double learningRate = 0.01;
 		final TransferFunctionType transferFunction = TransferFunctionType.SIGMOID;
@@ -33,7 +51,8 @@ public class NeuralNetwork
 		BackPropagation backPropagation = new BackPropagation();
 		backPropagation.setMaxError(maxError);
 		backPropagation.setLearningRate(learningRate);
-		this.mlPerceptron.learn(trainSet, backPropagation);
+		this.mlPerceptron.setLearningRule(backPropagation);
+		return trainSet;
 	}
 	
 	public String classify(Instance instance)
