@@ -2,6 +2,8 @@ package menthallab.wifimeasure;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -87,8 +89,9 @@ public class ClassifyActivity extends Activity {
 	    			instance.add(bssid, signalLevel / 100.0);
 	    		}
 	    		String classificationLabel = neuralNetwork.classify(instance);
-	    		Date end = new Date();
-    			String network = String.format("Room: %s. Computing time: %d ms", classificationLabel, new Date());
+	    		DateFormat df = new SimpleDateFormat("HH:mm:ss");
+	    		Date currentDate = new Date();
+    			String network = String.format("Room: %s. ( %s )", classificationLabel, df.format(currentDate));
     			resultRoomName.setText(network);
 	    		wifi.startScan();
     		}
