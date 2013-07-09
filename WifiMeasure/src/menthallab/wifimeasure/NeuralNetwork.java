@@ -46,12 +46,11 @@ public class NeuralNetwork
 		final int outputUnits = trainSet.getOutputSize();
 		final int hiddenUnits = (inputUnits + outputUnits) / 2;
 		this.mlPerceptron = new MultiLayerPerceptron(transferFunction, inputUnits, hiddenUnits, outputUnits);
-		this.mlPerceptron.learn(trainSet);
-		this.mlPerceptron.randomizeWeights();
 		BackPropagation backPropagation = new BackPropagation();
 		backPropagation.setMaxError(maxError);
 		backPropagation.setLearningRate(learningRate);
 		this.mlPerceptron.setLearningRule(backPropagation);
+		this.mlPerceptron.randomizeWeights();
 		return trainSet;
 	}
 	

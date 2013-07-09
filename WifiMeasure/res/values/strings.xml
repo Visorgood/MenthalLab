@@ -7,5 +7,6 @@
     <string name="title_activity_start">StartActivity</string>
     <string name="welcome_text">Welcome to our Application! To start training process push &quot;Train&quot; button, to define your location , push &quot;Classify&quot; button. Have fun!</string>
     <string name="title_activity_work">WorkActivity</string>
+    <string name="title_activity_wait">WaitActivity</string>
 
 </resources>

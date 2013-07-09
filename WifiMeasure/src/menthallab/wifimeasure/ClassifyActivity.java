@@ -10,8 +10,10 @@ import java.util.List;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,7 @@ public class ClassifyActivity extends Activity {
 	private TextView resultRoomName;
 	private WifiManager wifi;
 	private	NeuralNetwork neuralNetwork;
+	boolean learningFinished = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +45,38 @@ public class ClassifyActivity extends Activity {
 		{
 			Dataset dataset = DatasetManager.loadFromFile(filePath);
 			neuralNetwork = new NeuralNetwork();
-			neuralNetwork.learn(dataset);
-			wifi.startScan();
+			neuralNetwork.asyncLearn(dataset);
+			
+			final ProgressDialog pd = new ProgressDialog(this);
+			pd.setMessage("Learning...");
+		    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			
+			new CountDownTimer(200000, 1000) {
+			     public void onTick(long millisUntilFinished)
+			     {
+			    	 if (neuralNetwork.isCompleted())
+			    	 {
+			    		 this.cancel();
+			    		 pd.cancel();
+			    		 learningFinished = true;
+			    		 registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+			    		 wifi.startScan();
+			    	 }
+			     }
+
+			     public void onFinish()
+			     {
+			    	 if (!learningFinished)
+			    	 {
+				    	 AlertDialog alertDialog;
+				    	 alertDialog = new AlertDialog.Builder(ClassifyActivity.this).create();
+				    	 alertDialog.setMessage("Learning time is expired. Try with another data.");
+				    	 alertDialog.show();
+			    	 }
+			     }
+			}.start();
+			
+		    pd.show();
 		}
 		catch (IOException exc)
 		{
@@ -63,8 +96,11 @@ public class ClassifyActivity extends Activity {
 	@Override
     public void onResume() {
         super.onResume();
+        if (learningFinished)
+        {
 	        registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	        wifi.startScan();
+        }
     }
 
     @Override

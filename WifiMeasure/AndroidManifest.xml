@@ -35,8 +35,8 @@
         </activity>
         <activity
             android:name="menthallab.wifimeasure.ClassifyActivity"
-            android:label="@string/title_activity_work" 
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_work"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
