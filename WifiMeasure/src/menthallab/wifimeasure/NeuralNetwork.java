@@ -1,9 +1,9 @@
 package menthallab.wifimeasure;
 
 import java.util.*;
-
 import org.neuroph.core.learning.*;
 import org.neuroph.nnet.*;
+import org.neuroph.nnet.learning.*;
 import org.neuroph.util.*;
 
 public class NeuralNetwork
@@ -19,12 +19,21 @@ public class NeuralNetwork
 	
 	public void learn(Dataset dataset)
 	{
+		final double maxError = 0.01;
+		final double learningRate = 0.01;
+		final TransferFunctionType transferFunction = TransferFunctionType.SIGMOID;
+		
 		TrainingSet<SupervisedTrainingElement> trainSet = convertToNeuroph(dataset);
 		final int inputUnits = trainSet.getInputSize();
 		final int outputUnits = trainSet.getOutputSize();
 		final int hiddenUnits = (inputUnits + outputUnits) / 2;
-		this.mlPerceptron = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, inputUnits, hiddenUnits, outputUnits);
+		this.mlPerceptron = new MultiLayerPerceptron(transferFunction, inputUnits, hiddenUnits, outputUnits);
 		this.mlPerceptron.learn(trainSet);
+		this.mlPerceptron.randomizeWeights();
+		BackPropagation backPropagation = new BackPropagation();
+		backPropagation.setMaxError(maxError);
+		backPropagation.setLearningRate(learningRate);
+		this.mlPerceptron.learn(trainSet, backPropagation);
 	}
 	
 	public String classify(Instance instance)
