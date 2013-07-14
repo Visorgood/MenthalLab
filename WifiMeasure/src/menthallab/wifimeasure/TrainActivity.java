@@ -157,7 +157,6 @@ public class TrainActivity extends Activity {
     
     private void btBackPressed()
     {
-    	isWorking = false;//!!!!!! must be done other way!!!!!
         TrainActivity.super.onBackPressed();
     }
 }

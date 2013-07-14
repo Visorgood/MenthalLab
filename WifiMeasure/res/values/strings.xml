@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">WifiMeasure</string>
+    <string name="app_name">Waffle</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_start">WifiMeasure</string>
-    <string name="welcome_text">Welcome to WifiMeasure! To start gathering training data press \&quot;Gather training data\&quot; button. To get you current location, press \&quot;Learn and classify\&quot; button. Have fun!</string>
-    <string name="title_activity_work">Classification</string>
+    <string name="title_activity_start">Waffle</string>
+    <string name="welcome_text">Welcome to Waffle application! To start gathering training data press \&quot;Gather training data\&quot; button. To get you current location, press \&quot;Learn and classify\&quot; button. Have fun!</string>
+    <string name="title_activity_work">Your location</string>
 
 </resources>

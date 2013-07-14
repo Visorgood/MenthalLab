@@ -154,7 +154,7 @@ public class ClassifyActivity extends Activity {
 	    		String classificationLabel = neuralNetwork.classify(instance);
 	    		DateFormat df = new SimpleDateFormat("HH:mm:ss");
 	    		String currentTimeStr = df.format(new Date());
-    			String network = String.format("Room: %s. ( %s )", classificationLabel, currentTimeStr);
+    			String network = String.format("Room: %s. [%s]", classificationLabel, currentTimeStr);
     			resultRoomName.setText(network);
 	    		wifi.startScan();
     		}
