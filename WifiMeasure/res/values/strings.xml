@@ -3,10 +3,8 @@
 
     <string name="app_name">WifiMeasure</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_start">StartActivity</string>
-    <string name="welcome_text">Welcome to our Application! To start training process push &quot;Train&quot; button, to define your location , push &quot;Classify&quot; button. Have fun!</string>
-    <string name="title_activity_work">WorkActivity</string>
-    <string name="title_activity_wait">WaitActivity</string>
+    <string name="title_activity_start">WifiMeasure</string>
+    <string name="welcome_text">Welcome to WifiMeasure! To start gathering training data press \&quot;Gather training data\&quot; button. To get you current location, press \&quot;Learn and classify\&quot; button. Have fun!</string>
+    <string name="title_activity_work">Classification</string>
 
 </resources>

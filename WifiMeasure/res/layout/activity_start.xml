@@ -22,8 +22,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="55dp"
         android:onClick="startTraining"
-        android:text="Train"
-        android:width="100dp" />
+        android:text="Gather training data"
+        android:width="200dp" />
 
     <Button
         android:id="@+id/bt_classify"
@@ -33,7 +33,7 @@
         android:layout_below="@+id/bt_train"
         android:layout_marginTop="60dp"
         android:onClick="startClassifying"
-        android:text="Classify"
-        android:width="100dp" />
+        android:text="Learn and classify"
+        android:width="200dp" />
 
 </RelativeLayout>
