@@ -50,6 +50,7 @@ public class ClassifyActivity extends Activity {
 			final ProgressDialog pd = new ProgressDialog(this);
 			pd.setMessage("Learning...");
 		    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		    pd.setCanceledOnTouchOutside(false);
 			
 			new CountDownTimer(200000, 1000) {
 			     public void onTick(long millisUntilFinished)
@@ -161,17 +162,25 @@ public class ClassifyActivity extends Activity {
     // overrides WifiManager.calculateSignalLevel
     public int calculateSignalLevel(int rssi, int numLevels)
     {
-    	int MIN_RSSI        = -100;
-        int MAX_RSSI        = -55; 
+    	if (numLevels < 1)
+    		return 0;
+    	
+    	final int MIN_RSSI = -100;
+        final int MAX_RSSI = -55; 
         
-        if(rssi <= MIN_RSSI) {
+        if(rssi <= MIN_RSSI)
+        {
             return 0;
-        } else if(rssi >= MAX_RSSI) {
+        }
+        else if(rssi >= MAX_RSSI)
+        {
             return numLevels - 1;
-        } else {
+        }
+        else
+        {
             float inputRange = (MAX_RSSI - MIN_RSSI);
             float outputRange = (numLevels - 1);
-            if(inputRange != 0)
+            if(0 != inputRange)
                 return (int) ((float) (rssi - MIN_RSSI) * outputRange / inputRange);
         }
         return 0;

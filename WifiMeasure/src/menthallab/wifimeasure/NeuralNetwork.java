@@ -31,7 +31,6 @@ public class NeuralNetwork
 	
 	public boolean isCompleted()
 	{
-		// check whether is really learning!
 		return this.mlPerceptron.getLearningRule().isStopped();
 	}
 	
