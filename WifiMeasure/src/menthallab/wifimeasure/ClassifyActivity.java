@@ -15,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.Menu;
@@ -26,8 +27,9 @@ public class ClassifyActivity extends Activity {
 	private TextView resultRoomName;
 	private WifiManager wifi;
 	private	NeuralNetwork neuralNetwork;
-	private boolean learningCompleted; // network has been learned successfully!
+	private boolean learningCompleted; // shows that network has been learned successfully!
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,22 +52,27 @@ public class ClassifyActivity extends Activity {
 			final ProgressDialog pd = new ProgressDialog(this);
 			pd.setMessage("Learning...");
 		    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		    pd.setButton("Stop", new DialogInterface.OnClickListener() {
+		    	public void onClick(DialogInterface dialog, int which) 
+		        {
+		    		neuralNetwork.stopLearning();
+		    		stopTimer(pd, true);
+		        }
+		    });
 		    pd.setCanceledOnTouchOutside(false);
 		    
-			new CountDownTimer(300 * 1000, 1 * 1000) {
+			new CountDownTimer(1800 * 1000, 200) {
 			     public void onTick(long millisUntilFinished)
 			     {
 			    	 if (neuralNetwork.isCompleted())
 			    	 {
 			    		 this.cancel();
-			    		 pd.cancel();
-			    		 learningCompleted = true;
-			    		 registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-			    		 wifi.startScan();
+			    		 stopTimer(pd, false);
 			    	 }
 			    	 else
 			    	 {
-			    		 pd.setMessage("Learning...\nRemaining seconds: " + (millisUntilFinished / 1000) + "\nDesired error: " + maxNetworkError + "\nCurrent error: " + neuralNetwork.getCurrentError());
+			    		 pd.setMessage("Learning...\nDesired error: " + maxNetworkError + "\nCurrent error: " + neuralNetwork.getCurrentError());
+			    		 //Remaining seconds: " + (millisUntilFinished / 1000) + "\n
 			    	 }
 			     }
 
@@ -74,12 +81,7 @@ public class ClassifyActivity extends Activity {
 			    	 if (!learningCompleted)
 			    	 {
 			    		 neuralNetwork.stopLearning();
-				    	 pd.cancel();
-				    	 AlertDialog alertDialog;
-				    	 alertDialog = new AlertDialog.Builder(ClassifyActivity.this).create();
-				    	 alertDialog.setMessage("Learning time is expired. Try with another data.");
-				    	 alertDialog.show();
-				    	 //btBackPressed();
+			    		 stopTimer(pd, true);
 			    	 }
 			     }
 			}.start();
@@ -92,6 +94,20 @@ public class ClassifyActivity extends Activity {
 			ad.setMessage(exc.toString()); 
 			ad.show();
 		}
+	}
+	
+	private void stopTimer(ProgressDialog pd, boolean showAlert)
+	{
+	   	pd.cancel();
+	   	learningCompleted = true;
+	   	if (showAlert)
+	   	{
+		   	AlertDialog alertDialog = new AlertDialog.Builder(ClassifyActivity.this).create();
+		   	alertDialog.setMessage("Learning process was interrupted. You can proceed, but results may be unreliable.");
+		   	alertDialog.show();
+	   	}
+	   	registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+		wifi.startScan();
 	}
 
 	@Override

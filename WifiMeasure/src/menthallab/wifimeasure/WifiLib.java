@@ -2,7 +2,7 @@ package menthallab.wifimeasure;
 
 public class WifiLib
 {
-	public static int numberOfLevels = 100;
+	public static final int numberOfLevels = 100;
 	
 	public static int calculateSignalLevel(int rssi, int numLevels)
     {
