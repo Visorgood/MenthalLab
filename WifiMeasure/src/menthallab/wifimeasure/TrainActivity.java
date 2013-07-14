@@ -66,7 +66,9 @@ public class TrainActivity extends Activity {
     public void onPause() {
         super.onPause();
         if (isWorking)
+        {
         	unregisterReceiver(rssiReceiver);
+        }
     }
     
     BroadcastReceiver rssiReceiver = new BroadcastReceiver() {
@@ -75,18 +77,18 @@ public class TrainActivity extends Activity {
     	{
     		try
     		{
+				Instance instance = new Instance();
     			List<ScanResult> scanResults = wifi.getScanResults();
 	    		StringBuilder messageBuilder = new StringBuilder();
-				Instance instance = new Instance();
 	    		for (ScanResult scanResult : scanResults)
 	    		{
 	    			String ssid = scanResult.SSID;
-	    			int rssi = scanResult.level;
-	    			int signalLevel = calculateSignalLevel(rssi, 101); 
-	    			String network = String.format("Name: %s; RSSI: %d dBm; Level: %d\n", ssid, rssi, signalLevel);
-	    			messageBuilder.append(network);
 	    			String networkName = scanResult.BSSID;
-	    			instance.add(networkName, signalLevel / 100.0);
+	    			int rssi = scanResult.level;
+	    			int signalLevel = WifiLib.calculateSignalLevel(rssi, WifiLib.numberOfLevels + 1); 
+	    			String network = String.format("Name: %s; Level: %d\n", ssid, signalLevel);
+	    			messageBuilder.append(network);
+	    			instance.add(networkName, 1.0 * signalLevel / WifiLib.numberOfLevels);
 	    		}
 	    		String label = editText.getText().toString();
 	    		if (label.equals(""))
@@ -133,12 +135,12 @@ public class TrainActivity extends Activity {
     	}
     	else
     	{
-	    	isWorking = true;
-	    	startButton.setText("Stop");
-	    	editText.setEnabled(false);
-	    	backButton.setEnabled(false);
+    		isWorking = true;
+    		startButton.setText("Stop");
+    		editText.setEnabled(false);
+    		backButton.setEnabled(false);
     		registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-	    	wifi.startScan();
+    		wifi.startScan();
     	}
     }
     
@@ -157,24 +159,5 @@ public class TrainActivity extends Activity {
     {
     	isWorking = false;//!!!!!! must be done other way!!!!!
         TrainActivity.super.onBackPressed();
-    }
-    
-    // overrides WifiManager.calculateSignalLevel
-    public int calculateSignalLevel(int rssi, int numLevels)
-    {
-    	int MIN_RSSI        = -100;
-        int MAX_RSSI        = -55; 
-        
-        if(rssi <= MIN_RSSI) {
-            return 0;
-        } else if(rssi >= MAX_RSSI) {
-            return numLevels - 1;
-        } else {
-            float inputRange = (MAX_RSSI - MIN_RSSI);
-            float outputRange = (numLevels - 1);
-            if(inputRange != 0)
-                return (int) ((float) (rssi - MIN_RSSI) * outputRange / inputRange);
-        }
-        return 0;
     }
 }

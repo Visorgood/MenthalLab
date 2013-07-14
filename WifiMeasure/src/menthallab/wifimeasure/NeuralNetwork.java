@@ -9,12 +9,14 @@ import org.neuroph.util.*;
 public class NeuralNetwork
 {
 	private MultiLayerPerceptron mlPerceptron;
+	private BackPropagation backPropagation;
 	private List<String> attributes;
 	private List<String> labels;
 	
 	public NeuralNetwork()
 	{
 		this.mlPerceptron = null;
+		this.backPropagation = null;
 	}
 	
 	public void learn(Dataset dataset)
@@ -31,7 +33,24 @@ public class NeuralNetwork
 	
 	public boolean isCompleted()
 	{
-		return this.mlPerceptron.getLearningRule().isStopped();
+		return this.backPropagation.isStopped();
+	}
+	
+	public double getMaxError()
+	{
+		double error = this.backPropagation.getMaxError();
+		return (double)((int)(error * 100000) / 100000.0);
+	}
+	
+	public double getCurrentError()
+	{
+		double error = this.backPropagation.getPreviousEpochError();
+		return (double)((int)(error * 100000) / 100000.0);
+	}
+	
+	public void stopLearning()
+	{
+		this.backPropagation.stopLearning();
 	}
 	
 	private TrainingSet<SupervisedTrainingElement> initLearning(Dataset dataset)
@@ -40,16 +59,19 @@ public class NeuralNetwork
 		final double learningRate = 0.01;
 		final TransferFunctionType transferFunction = TransferFunctionType.SIGMOID;
 		
+		this.backPropagation = new BackPropagation();
+		this.backPropagation.setMaxError(maxError);
+		this.backPropagation.setLearningRate(learningRate);
+		
 		TrainingSet<SupervisedTrainingElement> trainSet = convertToNeuroph(dataset);
 		final int inputUnits = trainSet.getInputSize();
 		final int outputUnits = trainSet.getOutputSize();
 		final int hiddenUnits = (inputUnits + outputUnits) / 2;
+		
 		this.mlPerceptron = new MultiLayerPerceptron(transferFunction, inputUnits, hiddenUnits, outputUnits);
-		BackPropagation backPropagation = new BackPropagation();
-		backPropagation.setMaxError(maxError);
-		backPropagation.setLearningRate(learningRate);
 		this.mlPerceptron.setLearningRule(backPropagation);
 		this.mlPerceptron.randomizeWeights();
+		
 		return trainSet;
 	}
 	

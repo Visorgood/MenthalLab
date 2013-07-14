@@ -1,7 +1,6 @@
 package menthallab.wifimeasure;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,7 +19,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class ClassifyActivity extends Activity {
@@ -28,7 +26,7 @@ public class ClassifyActivity extends Activity {
 	private TextView resultRoomName;
 	private WifiManager wifi;
 	private	NeuralNetwork neuralNetwork;
-	boolean learningFinished = false;
+	private boolean learningCompleted; // network has been learned successfully!
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +35,7 @@ public class ClassifyActivity extends Activity {
 		
 		resultRoomName = (TextView)findViewById(R.id.text_classificationReuslt);
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		learningCompleted = false;
 		
 		File sdDir = android.os.Environment.getExternalStorageDirectory();
 		File file = new File(sdDir, "/dataset.csv");
@@ -46,40 +45,48 @@ public class ClassifyActivity extends Activity {
 			Dataset dataset = DatasetManager.loadFromFile(filePath);
 			neuralNetwork = new NeuralNetwork();
 			neuralNetwork.asyncLearn(dataset);
+			final double maxNetworkError = neuralNetwork.getMaxError();
 			
 			final ProgressDialog pd = new ProgressDialog(this);
 			pd.setMessage("Learning...");
 		    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		    pd.setCanceledOnTouchOutside(false);
-			
-			new CountDownTimer(200000, 1000) {
+		    
+			new CountDownTimer(300 * 1000, 1 * 1000) {
 			     public void onTick(long millisUntilFinished)
 			     {
 			    	 if (neuralNetwork.isCompleted())
 			    	 {
 			    		 this.cancel();
 			    		 pd.cancel();
-			    		 learningFinished = true;
+			    		 learningCompleted = true;
 			    		 registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 			    		 wifi.startScan();
+			    	 }
+			    	 else
+			    	 {
+			    		 pd.setMessage("Learning...\nRemaining seconds: " + (millisUntilFinished / 1000) + "\nDesired error: " + maxNetworkError + "\nCurrent error: " + neuralNetwork.getCurrentError());
 			    	 }
 			     }
 
 			     public void onFinish()
 			     {
-			    	 if (!learningFinished)
+			    	 if (!learningCompleted)
 			    	 {
+			    		 neuralNetwork.stopLearning();
+				    	 pd.cancel();
 				    	 AlertDialog alertDialog;
 				    	 alertDialog = new AlertDialog.Builder(ClassifyActivity.this).create();
 				    	 alertDialog.setMessage("Learning time is expired. Try with another data.");
 				    	 alertDialog.show();
+				    	 //btBackPressed();
 			    	 }
 			     }
 			}.start();
 			
 		    pd.show();
 		}
-		catch (IOException exc)
+		catch (Exception exc)
 		{
 			AlertDialog ad = new AlertDialog.Builder(this).create();
 			ad.setMessage(exc.toString()); 
@@ -97,7 +104,7 @@ public class ClassifyActivity extends Activity {
 	@Override
     public void onResume() {
         super.onResume();
-        if (learningFinished)
+        if (learningCompleted)
         {
 	        registerReceiver(rssiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	        wifi.startScan();
@@ -107,7 +114,10 @@ public class ClassifyActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
+        if (learningCompleted)
+        {
         	unregisterReceiver(rssiReceiver);
+        }
     }
 	
     BroadcastReceiver rssiReceiver = new BroadcastReceiver() {
@@ -122,13 +132,13 @@ public class ClassifyActivity extends Activity {
 	    		{
 	    			String bssid = scanResult.BSSID;
 	    			int rssi = scanResult.level;
-	    			int signalLevel = calculateSignalLevel(rssi, 101);
-	    			instance.add(bssid, signalLevel / 100.0);
+	    			int signalLevel = WifiLib.calculateSignalLevel(rssi, WifiLib.numberOfLevels + 1);
+	    			instance.add(bssid, 1.0 * signalLevel / WifiLib.numberOfLevels);
 	    		}
 	    		String classificationLabel = neuralNetwork.classify(instance);
 	    		DateFormat df = new SimpleDateFormat("HH:mm:ss");
-	    		Date currentDate = new Date();
-    			String network = String.format("Room: %s. ( %s )", classificationLabel, df.format(currentDate));
+	    		String currentTimeStr = df.format(new Date());
+    			String network = String.format("Room: %s. ( %s )", classificationLabel, currentTimeStr);
     			resultRoomName.setText(network);
 	    		wifi.startScan();
     		}
@@ -158,32 +168,4 @@ public class ClassifyActivity extends Activity {
     {
         ClassifyActivity.super.onBackPressed();
     }
-    
-    // overrides WifiManager.calculateSignalLevel
-    public int calculateSignalLevel(int rssi, int numLevels)
-    {
-    	if (numLevels < 1)
-    		return 0;
-    	
-    	final int MIN_RSSI = -100;
-        final int MAX_RSSI = -55; 
-        
-        if(rssi <= MIN_RSSI)
-        {
-            return 0;
-        }
-        else if(rssi >= MAX_RSSI)
-        {
-            return numLevels - 1;
-        }
-        else
-        {
-            float inputRange = (MAX_RSSI - MIN_RSSI);
-            float outputRange = (numLevels - 1);
-            if(0 != inputRange)
-                return (int) ((float) (rssi - MIN_RSSI) * outputRange / inputRange);
-        }
-        return 0;
-    }
-
 }
