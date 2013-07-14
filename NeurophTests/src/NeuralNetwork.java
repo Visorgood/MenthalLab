@@ -24,20 +24,20 @@ public class NeuralNetwork
 		BackPropagation backPropagation = new BackPropagation();
 		backPropagation.setMaxError(maxError);
 		backPropagation.setLearningRate(learningRate);
-		//this.mlPerceptron.learn(trainSet, backPropagation);
-		this.mlPerceptron.learnInNewThread(trainSet, backPropagation);
-		for (int i = 0; !backPropagation.isStopped(); ++i)
-		{
-			System.out.println(i);
-			try
-			{
-				Thread.sleep(100);
-			}
-			catch (Exception exc)
-			{
-			
-			}
-		}
+		this.mlPerceptron.learn(trainSet, backPropagation);
+//		this.mlPerceptron.learnInNewThread(trainSet, backPropagation);
+//		while (!backPropagation.isStopped())
+//		{
+//			System.out.println(backPropagation.getPreviousEpochError());
+//			try
+//			{
+//				Thread.sleep(100);
+//			}
+//			catch (Exception exc)
+//			{
+//			
+//			}
+//		}
 	}
 	
 	public double[] classify(SupervisedTrainingElement testInstance)
