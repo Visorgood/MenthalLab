@@ -6,13 +6,13 @@ public class Program
 {
 	public static void main(String[] args)
 	{		
-		final int inputs = 21;
-		final int outputs = 4;
+		final int inputs = 69;
+		final int outputs = 5;
 		final double maxError = 0.01;
 		final double learningRate = 0.01;
 		final int partitionsNumber = 10;
 		
-		TrainingSet<SupervisedTrainingElement> trainSet = TrainingSet.createFromFile("train.txt", inputs, outputs, ",");
+		TrainingSet<SupervisedTrainingElement> trainSet = TrainingSet.createFromFile("Roelof1.txt", inputs, outputs, ",");
 		
 		final int partitionSize = trainSet.size() / partitionsNumber;
 		
@@ -30,9 +30,12 @@ public class Program
 			}
 			partitions.add(partition);
 		}
+
 		
 		NeuralNetwork neuralNetwork = new NeuralNetwork();
+		
 		double meanError = 0.0;
+		long meanTime = 0;
 		for (int i = 0; i < partitionsNumber; ++i) 
 		{
 			TrainingSet<SupervisedTrainingElement> trainPartitions = new TrainingSet<SupervisedTrainingElement>();
@@ -49,7 +52,13 @@ public class Program
 			trainPartitions.saveAsTxt("temp.txt", ",");
 			trainPartitions = TrainingSet.createFromFile("temp.txt", inputs, outputs, ",");
 			
+			Date start = new Date();
+			
 			neuralNetwork.learn(trainPartitions, maxError, learningRate);
+			
+			Date finish = new Date();
+			
+			meanTime += finish.getTime() - start.getTime();
 			
 			double error = 0;
 			for (SupervisedTrainingElement testInstance : testPartition.elements())
@@ -74,7 +83,9 @@ public class Program
 			System.out.println("Classification error: " + error);
 		}
 		meanError /= partitionsNumber;
+		meanTime /= partitionsNumber;
 		System.out.println("Mean classification error: " + meanError);
+		System.out.println("Mean time: " + meanTime);
 		
 		/*trainSet.saveAsTxt("output.txt", ",");
 		
