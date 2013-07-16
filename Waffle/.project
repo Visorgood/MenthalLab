@@ -3,6 +3,7 @@
 	<name>Waffle</name>
 	<comment></comment>
 	<projects>
+		<project>WaffleLib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

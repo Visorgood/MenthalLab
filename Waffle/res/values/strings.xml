@@ -3,6 +3,10 @@
 
     <string name="app_name">Waffle</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_start">Waffle</string>
+    <string name="welcome_text">Welcome to Waffle application! To start gathering training data press \&quot;Gather training data\&quot; button. To get you current location, press \&quot;Learn and classify\&quot; button. Have fun!</string>
+    <string name="title_activity_gather">Your location</string>
+    <string name="title_activity_classify">ClassifyActivity</string>
     <string name="hello_world">Hello world!</string>
 
 </resources>

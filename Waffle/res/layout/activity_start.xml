@@ -9,8 +9,31 @@
     tools:context=".StartActivity" >
 
     <TextView
+        android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="@string/welcome_text" />
+
+    <Button
+        android:id="@+id/bt_gather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/welcome_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="55dp"
+        android:onClick="startTraining"
+        android:text="Gather training data"
+        android:width="200dp" />
+
+    <Button
+        android:id="@+id/bt_classify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/bt_gather"
+        android:layout_below="@+id/bt_gather"
+        android:layout_marginTop="60dp"
+        android:onClick="startClassifying"
+        android:text="Learn and classify"
+        android:width="200dp" />
 
 </RelativeLayout>
