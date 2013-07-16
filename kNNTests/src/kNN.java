@@ -75,7 +75,7 @@ public class kNN
 		for (int i = 0; i < this.dataset.size(); ++i)
 		{
 			Instance instance = this.dataset.getInstance(i);
-			int sum = 0;
+			double sum = 0;
 			for (String attributeName : datasetAttributes)
 			{
 				double value = instance.get(attributeName);
