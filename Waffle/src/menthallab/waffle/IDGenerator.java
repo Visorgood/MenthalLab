@@ -2,20 +2,22 @@ package menthallab.waffle;
 
 public class IDGenerator
 {
-	private static int id = 1;
+	private final static int INITIAL_ID = 1; 
 	
-	public static void init(int initValue)
+	private static int id = INITIAL_ID;
+	
+	public static void reset(int initialValue)
 	{
-		id = initValue;
+		id = initialValue;
+	}
+	
+	public static void reset()
+	{
+		reset(INITIAL_ID);
 	}
 	
 	public static int getNextId()
 	{
 		return id++;
-	}
-	
-	public static void reset()
-	{
-		id = 1;
 	}
 }
