@@ -118,8 +118,8 @@ public class Dataset
 		{
 			int index = rand.nextInt(tempInstances.size());
 			RawInstance instance = tempInstances.remove(index);
-			this.instances.add(instance);
 			String label = tempLabels.remove(index);
+			this.instances.add(instance);
 			this.labels.add(label);
 		}
 	}
