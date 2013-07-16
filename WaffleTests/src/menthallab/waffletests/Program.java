@@ -25,8 +25,7 @@ public class Program
 		}
 		catch (Exception exc)
 		{
-			System.out.println("Exception!");
-			System.out.println(exc);
+			exc.printStackTrace();
 		}
 	}
 }
