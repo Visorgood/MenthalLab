@@ -17,6 +17,14 @@ public class Dataset
 		this.differentLabels = new ArrayList<String>();
 	}
 	
+	public Dataset(Dataset dataset)
+	{
+		this.attributes = new ArrayList<String>(dataset.attributes);
+		this.instances = new ArrayList<RawInstance>(dataset.instances);
+		this.labels = new ArrayList<String>(dataset.labels);
+		this.differentLabels = new ArrayList<String>(dataset.differentLabels);
+	}
+	
 	public boolean addAttribute(String attributeName)
 	{
 		if (this.attributes.contains(attributeName))
@@ -107,5 +115,22 @@ public class Dataset
 	public int size()
 	{
 		return this.instances.size();
+	}
+	
+	public void shuffle()
+	{
+		Random rand = new Random();
+		List<RawInstance> tempInstances = new ArrayList<RawInstance>(this.instances);
+		List<String> tempLabels = new ArrayList<String>(this.labels);
+		this.instances.clear();
+		this.labels.clear();
+		while (tempInstances.size() > 0)
+		{
+			int index = rand.nextInt(tempInstances.size());
+			RawInstance instance = tempInstances.remove(index);
+			String label = tempLabels.remove(index);
+			this.instances.add(instance);
+			this.labels.add(label);
+		}
 	}
 }
