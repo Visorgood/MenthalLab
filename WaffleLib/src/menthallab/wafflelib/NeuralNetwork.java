@@ -50,22 +50,29 @@ public class NeuralNetwork implements Classifier
 
 	public boolean isCompleted()
 	{
-		return this.backPropagation.isStopped();
+		return (null == this.mlPerceptron || this.backPropagation.isStopped());
 	}
 	
 	public void stopLearning()
 	{
+		if (null == this.mlPerceptron)
+			throw new IllegalStateException("NeuralNetwork.stopLearning: learning process was not initialized");
 		this.backPropagation.stopLearning();
 	}
 	
 	public double getDesiredLearningError()
 	{
+		if (null == this.mlPerceptron)
+			throw new IllegalStateException("NeuralNetwork.getDesiredLearningError: network was not learned");
 		double error = this.backPropagation.getMaxError();
 		return (double)((int)(error * 1000000) / 1000000.0);
 	}
 	
 	public double getCurrentLearningError()
 	{
+
+		if (null == this.mlPerceptron)
+			throw new IllegalStateException("NeuralNetwork.getCurrentLearningError: learning process was not initialized");
 		double error = this.backPropagation.getPreviousEpochError();
 		return (double)((int)(error * 1000000) / 1000000.0);
 	}
@@ -73,7 +80,7 @@ public class NeuralNetwork implements Classifier
 	public String classify(Instance instance)
 	{
 		if (null == this.mlPerceptron)
-			throw new NullPointerException("NeuralNetwork.classify: network was not learned");
+			throw new IllegalStateException("NeuralNetwork.classify: network was not learned");
 		if (null == instance)
 			throw new NullPointerException("NeuralNetwork.classify: instance is null");
 		double[] input = new double[this.attributes.size()];
@@ -92,8 +99,6 @@ public class NeuralNetwork implements Classifier
 	
 	private TrainingSet<SupervisedTrainingElement> initLearning(Dataset dataset)
 	{
-		
-		
 		this.backPropagation = new BackPropagation();
 		this.backPropagation.setMaxError(DESIRED_ERROR);
 		this.backPropagation.setLearningRate(LEARNING_RATE);

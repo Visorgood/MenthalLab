@@ -1,7 +1,6 @@
 package menthallab.waffletests;
 
-import java.util.Date;
-
+import java.util.*;
 import menthallab.wafflelib.*;
 
 public class CrossValidation
@@ -61,6 +60,7 @@ public class CrossValidation
 				classificationError += (desiredLabel.equals(classificationLabel) ? 0.0 : 1.0);
 			}
 			meanClassificationError += (classificationError / testPartition.size());
+			//System.out.println(classificationError / testPartition.size());
 		}
 		meanClassificationError /= numberOfPartitions;
 		meanLearningTime /= numberOfPartitions;

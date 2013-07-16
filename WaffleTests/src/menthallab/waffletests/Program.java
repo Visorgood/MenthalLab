@@ -12,7 +12,7 @@ public class Program
 			final Dataset dataset = DatasetManager.loadFromFile(trainFilePath);
 			
 			final Classifier classifier = new NeuralNetwork();
-			//Classifier classifier = new kNN();
+			//final Classifier classifier = new kNN();
 			
 			final CrossValidationResult result = CrossValidation.Execute(dataset, classifier);
 			
@@ -25,7 +25,8 @@ public class Program
 		}
 		catch (Exception exc)
 		{
-			System.out.println(exc.getMessage());
+			System.out.println("Exception!");
+			System.out.println(exc);
 		}
 	}
 }
