@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/WaffleLib"/>
-	<classpathentry kind="lib" path="C:/Users/Lana/Documents/GitHub/MenthalLab/WaffleLib/libs/encog-engine-2.5.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Lana/Documents/GitHub/MenthalLab/WaffleLib/libs/neuroph-2.6.jar"/>
+	<classpathentry kind="lib" path="libs/encog-engine-2.5.0.jar"/>
+	<classpathentry kind="lib" path="libs/neuroph-2.6.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
