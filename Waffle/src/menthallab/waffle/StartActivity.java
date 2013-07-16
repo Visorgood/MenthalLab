@@ -1,14 +1,9 @@
 package menthallab.waffle;
 
-import menthallab.waffle.ClassifyActivity;
-import menthallab.waffle.GatherActivity;
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
-import android.view.Menu;
-import android.view.View;
-
-//import menthallab.wafflelib.*
+import android.os.*;
+import android.app.*;
+import android.content.*;
+import android.view.*;
 
 public class StartActivity extends Activity {
 

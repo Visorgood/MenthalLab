@@ -1,27 +1,17 @@
 package menthallab.waffle;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.io.*;
+import java.text.*;
+import java.util.*;
+
+import android.net.wifi.*;
+import android.os.*;
+import android.app.*;
+import android.content.*;
+import android.view.*;
+import android.widget.*;
 
 import menthallab.wafflelib.*;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.view.Menu;
-import android.view.View;
-import android.widget.TextView;
 
 public class ClassifyActivity extends Activity {
 	
@@ -163,7 +153,6 @@ public class ClassifyActivity extends Activity {
     		{
     			AlertDialog ad = new AlertDialog.Builder(context).create();
     			ad.setMessage(exc.toString());
-    			StackTraceElement[] stackTrace = exc.getStackTrace();
     			ad.show();
     		}
         }
