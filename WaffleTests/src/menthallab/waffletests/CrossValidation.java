@@ -1,5 +1,7 @@
 package menthallab.waffletests;
 
+import java.util.Date;
+
 import menthallab.wafflelib.*;
 
 public class CrossValidation
@@ -41,21 +43,30 @@ public class CrossValidation
 			}
 			
 			// Learn classifier on the training set
+			Date startTime = new Date();
 			classifier.learn(trainPartition);
+			Date endTime = new Date();
+			meanLearningTime += (endTime.getTime() - startTime.getTime());
 			
 			// Test classifier on the test set and compute classification error
-			double error = 0.0;
+			double classificationError = 0.0;
 			for (int j = 0; j < testPartition.size(); ++j)
 			{
 				String desiredLabel = testPartition.getLabel(j);
-				String classificationLabel = classifier.classify(testPartition.getInstance(j));
-				error += (desiredLabel.equals(classificationLabel) ? 0.0 : 1.0);
+				Instance instance = testPartition.getInstance(j);
+				startTime = new Date();
+				String classificationLabel = classifier.classify(instance);
+				endTime = new Date();
+				meanClassificationTime += (endTime.getTime() - startTime.getTime());
+				classificationError += (desiredLabel.equals(classificationLabel) ? 0.0 : 1.0);
 			}
-			meanClassificationError += (error / testPartition.size());
+			meanClassificationError += (classificationError / testPartition.size());
 		}
 		meanClassificationError /= numberOfPartitions;
+		meanLearningTime /= numberOfPartitions;
+		meanClassificationTime /= (numberOfPartitions * partitionSize);
 
-		return new CrossValidationResult(meanClassificationError, meanError, meanError);
+		return new CrossValidationResult(meanClassificationError, meanLearningTime, meanClassificationTime);
 	}
 }
 

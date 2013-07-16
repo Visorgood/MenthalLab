@@ -9,6 +9,12 @@ public class kNN implements Classifier
 	private Dataset dataset;
 	private final int k;
 	
+	public kNN()
+	{
+		this.dataset = null;
+		this.k = DEFAULT_K;
+	}
+	
 	public kNN(int k)
 	{
 		this.dataset = null;

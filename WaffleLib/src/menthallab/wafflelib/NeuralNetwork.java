@@ -7,7 +7,7 @@ import org.neuroph.nnet.*;
 import org.neuroph.nnet.learning.*;
 import org.neuroph.util.*;
 
-public class NeuralNetwork
+public class NeuralNetwork implements Classifier
 {
 	private final static double DESIRED_ERROR = 0.01;
 	private final static double LEARNING_RATE = 0.01;
